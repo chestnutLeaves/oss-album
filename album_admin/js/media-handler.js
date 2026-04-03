@@ -198,12 +198,27 @@ class MediaHandler {
   }
   
   // 生成随机文件名
-  generateFileName(type, originalFilename) {
+  generateFileName(type, originalFilename, siteId, ossPrefix = null) {
     const date = new Date();
     const dateStr = `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}`;
     const randomStr = Math.random().toString(36).substring(2, 10);
     const ext = originalFilename.split('.').pop();
-    return `${type}/${dateStr}/${randomStr}.${ext}`;
+    
+    // 清理路径中的多余斜杠
+    const cleanPath = (path) => {
+      return path.replace(/^\/|\/$/g, '').replace(/\/+/g, '/');
+    };
+    
+    // 根据类型生成不同的路径格式
+    if (type === 'banner') {
+      // Banner图片路径：site/站点id/banner/具体文件
+      return `site/${siteId}/banner/${randomStr}.${ext}`;
+    } else {
+      // 相册图片路径：site/站点id/相册设置的ossPrefix/具体文件
+      const prefix = ossPrefix || type;
+      const cleanPrefix = cleanPath(prefix);
+      return `site/${siteId}/${cleanPrefix}/${randomStr}.${ext}`;
+    }
   }
   
   // 生成 OSS 路径（旧方法，保留兼容性）

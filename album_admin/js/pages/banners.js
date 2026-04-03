@@ -471,11 +471,11 @@ async function saveBanner() {
         const compressedFile = await mediaHandler.compressImage(imageFile);
         
         // 2. 生成文件名
-        const fileName = mediaHandler.generateFileName('banner', imageFile.name);
+        const siteId = parseInt(formData.get('siteId'));
+        const fileName = mediaHandler.generateFileName('banner', imageFile.name, siteId);
         
         // 3. 上传压缩后的图片
         uploadTip.textContent = '正在上传图片...';
-        const siteId = parseInt(formData.get('siteId'));
         imageUrl = await ossClient.uploadFile(
           compressedFile,
           fileName,

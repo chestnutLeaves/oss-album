@@ -221,7 +221,7 @@ function renderAlbumList(albumList) {
             <td>${album.sortOrder}</td>
             <td>${dateFormatter.format(album.createTime)}</td>
             <td>
-              <button class="btn btn-primary manage-files-btn" data-id="${album.id}" data-title="${album.title}">管理文件</button>
+              <button class="btn btn-primary manage-files-btn" data-id="${album.id}" data-title="${album.title}" data-oss-prefix="${album.ossPrefix || ''}">管理文件</button>
               <button class="btn btn-secondary edit-btn" data-id="${album.id}">编辑</button>
               <button class="btn btn-danger delete-btn" data-id="${album.id}">删除</button>
             </td>
@@ -238,7 +238,8 @@ function renderAlbumList(albumList) {
     btn.addEventListener('click', () => {
       const albumId = btn.getAttribute('data-id');
       const albumTitle = btn.getAttribute('data-title');
-      manageFiles(albumId, albumTitle);
+      const ossPrefix = btn.getAttribute('data-oss-prefix');
+      manageFiles(albumId, albumTitle, ossPrefix);
     });
   });
   
@@ -512,13 +513,13 @@ async function deleteAlbum(id) {
 }
 
 // 管理文件
-function manageFiles(albumId, albumTitle) {
+function manageFiles(albumId, albumTitle, ossPrefix) {
   // 这里可以跳转到媒体管理页面，或者在当前页面加载媒体管理内容
   // 由于我们移除了媒体管理菜单，这里直接在当前页面加载媒体管理功能
   // 设置当前站点ID
   setCurrentSiteId(currentSiteId);
   // 调用媒体管理功能
-  loadMediaManagement(albumId, albumTitle);
+  loadMediaManagement(albumId, albumTitle, ossPrefix);
 }
 
 // 绑定拖拽排序事件

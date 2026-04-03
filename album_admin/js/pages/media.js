@@ -6,7 +6,7 @@ import { mediaHandler } from '../media-handler.js';
 let mediaDataMap = {};
 
 // 初始化媒体管理页面
-export async function loadMediaManagement(albumId, albumTitle, contentBody) {
+export async function loadMediaManagement(albumId, albumTitle, ossPrefix, contentBody) {
   // 如果没有提供 contentBody，尝试从全局获取
   if (!contentBody) {
     contentBody = document.getElementById('content-body');
@@ -48,7 +48,7 @@ export async function loadMediaManagement(albumId, albumTitle, contentBody) {
   
   // 绑定上传按钮事件
   document.getElementById('upload-media-btn').addEventListener('click', () => {
-    openUploadModal(albumId, currentSiteId);
+    openUploadModal(albumId, currentSiteId, ossPrefix);
   });
   
   // 加载媒体列表
@@ -966,7 +966,7 @@ function selectTag(tag) {
 }
 
 // 打开上传弹窗
-export function openUploadModal(albumId, siteId) {
+export function openUploadModal(albumId, siteId, ossPrefix) {
   const modal = document.getElementById('upload-modal');
   if (!modal) {
     return;
@@ -976,6 +976,12 @@ export function openUploadModal(albumId, siteId) {
   const albumIdInput = document.getElementById('upload-album-id');
   if (albumIdInput) {
     albumIdInput.value = albumId;
+  }
+  
+  // 设置OSS前缀
+  const ossPrefixInput = document.getElementById('upload-album-oss-prefix');
+  if (ossPrefixInput) {
+    ossPrefixInput.value = ossPrefix || '';
   }
   
   // 存储siteId到弹窗元素属性中
@@ -1542,7 +1548,8 @@ export async function handleMediaUpload(albumId, files) {
       const processedMedia = await mediaHandler.processMedia(file);
       
       // 2. 生成文件名
-      const fileName = mediaHandler.generateFileName('media', file.name);
+      const ossPrefix = document.getElementById('upload-album-oss-prefix')?.value || 'media';
+      const fileName = mediaHandler.generateFileName('media', file.name, siteId, ossPrefix);
       
       // 3. 上传原图（带进度）
       const originalUrl = await ossClient.uploadFile(
