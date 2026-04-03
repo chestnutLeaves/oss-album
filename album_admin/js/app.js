@@ -123,11 +123,16 @@ function initChangePassword() {
   closeBtn.addEventListener('click', closeModal);
   cancelBtn.addEventListener('click', closeModal);
   
-  // 点击模态框外部关闭
-  window.addEventListener('click', (e) => {
-    if (e.target === changePasswordModal) {
+  // 点击模态框外部关闭 - 使用mousedown和mouseup事件组合避免误关闭
+  let clickStartTarget = null;
+  window.addEventListener('mousedown', (e) => {
+    clickStartTarget = e.target;
+  });
+  window.addEventListener('mouseup', (e) => {
+    if (clickStartTarget === changePasswordModal && e.target === changePasswordModal) {
       closeModal();
     }
+    clickStartTarget = null;
   });
   
   // 表单提交

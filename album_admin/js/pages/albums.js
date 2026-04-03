@@ -272,12 +272,17 @@ function bindEvents() {
     addAlbumBtn.addEventListener('click', () => openModal());
   }
   
-  // 点击模态框外部关闭
-  window.addEventListener('click', (e) => {
+  // 点击模态框外部关闭 - 使用mousedown和mouseup事件组合避免误关闭
+  let clickStartTarget = null;
+  window.addEventListener('mousedown', (e) => {
+    clickStartTarget = e.target;
+  });
+  window.addEventListener('mouseup', (e) => {
     const modal = document.getElementById('album-modal');
-    if (modal && e.target === modal) {
+    if (modal && clickStartTarget === modal && e.target === modal) {
       closeModal();
     }
+    clickStartTarget = null;
   });
 }
 

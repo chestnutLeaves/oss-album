@@ -493,11 +493,16 @@ function bindAddTagModalEvents() {
     });
   }
   
-  // 点击弹窗外部关闭
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
+  // 点击弹窗外部关闭 - 使用mousedown和mouseup事件组合避免误关闭
+  let clickStartTarget = null;
+  modal.addEventListener('mousedown', (e) => {
+    clickStartTarget = e.target;
+  });
+  modal.addEventListener('mouseup', (e) => {
+    if (clickStartTarget === modal && e.target === modal) {
       modal.style.display = 'none';
     }
+    clickStartTarget = null;
   });
 }
 
@@ -1268,8 +1273,13 @@ export function bindMediaItemEvents() {
   }
   
   if (previewModal) {
-    previewModal.addEventListener('click', function(e) {
-      if (e.target === previewModal) {
+    // 点击弹窗外部关闭 - 使用mousedown和mouseup事件组合避免误关闭
+    let clickStartTarget = null;
+    previewModal.addEventListener('mousedown', (e) => {
+      clickStartTarget = e.target;
+    });
+    previewModal.addEventListener('mouseup', (e) => {
+      if (clickStartTarget === previewModal && e.target === previewModal) {
         // 移除show类
         previewModal.classList.remove('show');
         // 等待动画完成后再隐藏
@@ -1277,6 +1287,7 @@ export function bindMediaItemEvents() {
           previewModal.style.display = 'none';
         }, 300);
       }
+      clickStartTarget = null;
     });
   }
 }

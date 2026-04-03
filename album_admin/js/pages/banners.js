@@ -303,12 +303,17 @@ function bindEvents() {
     });
   }
   
-  // 点击模态框外部关闭
-  window.addEventListener('click', (e) => {
+  // 点击模态框外部关闭 - 使用mousedown和mouseup事件组合避免误关闭
+  let clickStartTarget = null;
+  window.addEventListener('mousedown', (e) => {
+    clickStartTarget = e.target;
+  });
+  window.addEventListener('mouseup', (e) => {
     const modal = document.getElementById('banner-modal');
-    if (modal && e.target === modal) {
+    if (modal && clickStartTarget === modal && e.target === modal) {
       closeModal();
     }
+    clickStartTarget = null;
   });
   
   // 使用事件委托处理模态框内的按钮点击
@@ -679,9 +684,13 @@ function previewBannerImage(imageUrl, title) {
       });
     }
     
-    // 点击弹窗外部关闭
-    previewModal.addEventListener('click', function(e) {
-      if (e.target === previewModal) {
+    // 点击弹窗外部关闭 - 使用mousedown和mouseup事件组合避免误关闭
+    let clickStartTarget = null;
+    previewModal.addEventListener('mousedown', (e) => {
+      clickStartTarget = e.target;
+    });
+    previewModal.addEventListener('mouseup', (e) => {
+      if (clickStartTarget === previewModal && e.target === previewModal) {
         // 移除show类
         previewModal.classList.remove('show');
         // 等待动画完成后再隐藏
@@ -689,6 +698,7 @@ function previewBannerImage(imageUrl, title) {
           previewModal.style.display = 'none';
         }, 300);
       }
+      clickStartTarget = null;
     });
   }
   
