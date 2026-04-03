@@ -23,31 +23,31 @@
 
 ### 站点首页
 
-![album_index](screen_shot\album_index.png)
+![album_index](screen_shot/album_index.png)
 
 ---
 
 ### 站点搜索页
 
-![album_explore](screen_shot\album_explore.png)
+![album_explore](screen_shot/album_explore.png)
 
 ---
 
 ### 站点相册页
 
-![album_info](screen_shot\album_info.png)
+![album_info](screen_shot/album_info.png)
 
 ---
 
 ### 站点查看大图
 
-![album_preview](screen_shot\album_preview.png)
+![album_preview](screen_shot/album_preview.png)
 
 ---
 
 ### 相册管理
 
-![admin_album_info](screen_shot\admin_album_info.png)
+![admin_album_info](screen_shot/admin_album_info.png)
 
 ## ✨ 项目亮点
 
