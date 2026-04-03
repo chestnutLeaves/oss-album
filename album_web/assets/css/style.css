@@ -1,0 +1,1677 @@
+/* 
+ * 个人相册项目 - 公共CSS样式文件
+ * 版本: 1.0.0
+ * 生成日期: 2026-03-25
+ * 描述: 包含所有必要的自定义样式，确保离线运行能力。
+ */
+
+/* ==================== 1. 全局样式重置与变量定义 ==================== */
+
+:root {
+    --primary-color: #b91c1c; /* 深红色，呼应红叶主题 */
+    --primary-hover: #991b1b;
+    --text-main: #1f2937;
+    --text-secondary: #4b5563;
+    --bg-body: #f3f4f6;
+    --bg-card: #ffffff;
+    --border-color: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* ==================== 2. 布局容器 ==================== */
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* ==================== 3. 顶部导航栏 ==================== */
+
+.header-enhanced {
+    height: 80px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    background: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.header-enhanced .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.brand-logo {
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+    background: linear-gradient(to bottom right, #667eea, #764ba2);
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.brand-logo i {
+    color: white;
+    font-size: 1.25rem;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.brand-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.brand-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* 导航菜单 */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: 1px solid transparent;
+}
+
+.nav-item:hover {
+    color: var(--primary-color);
+    background-color: rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.nav-item.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* 管理按钮 */
+.admin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+}
+
+.admin-btn:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background-color: rgba(102, 126, 234, 0.1);
+}
+
+/* ==================== 4. 相册头部区域 (标题与描述) ==================== */
+
+.album-header {
+    background-color: var(--bg-card);
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+}
+
+.album-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+}
+
+.album-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.album-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    letter-spacing: -0.025em;
+}
+
+.album-description {
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* ==================== 4. 标签筛选器 ==================== */
+
+.filter-section {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.filter-btn {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.filter-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.filter-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+}
+
+/* ==================== 5. 照片网格区域 ==================== */
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    padding-bottom: 4rem;
+}
+
+.photo-card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.photo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.photo-thumb-wrapper {
+    position: relative;
+    padding-top: 66.66%; /* 3:2 Aspect Ratio */
+    overflow: hidden;
+    background-color: #e5e7eb;
+}
+
+.photo-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.photo-card:hover .photo-thumb {
+    transform: scale(1.05);
+}
+
+.photo-info {
+    padding: 1.25rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.photo-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.photo-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.photo-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    background-color: #f3f4f6;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tag-badge:hover {
+    background-color: #374151;
+    color: white;
+}
+
+.tag-badge.active {
+    background-color: #374151;
+    color: white;
+}
+
+/* ==================== 6. 灯箱预览 (Lightbox) ==================== */
+
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    display: none; /* Hidden by default */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.lightbox.open {
+    display: flex;
+    opacity: 1;
+}
+
+.lightbox-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.lightbox-image-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.lightbox-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-radius: 4px;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 1010;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==================== 7. EXIF 信息面板 ==================== */
+
+.exif-panel {
+    width: 350px;
+    background-color: #ffffff;
+    color: var(--text-main);
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+}
+
+.exif-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.exif-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.exif-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.exif-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.exif-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.exif-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+}
+
+.exif-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.exif-tags {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.exif-tag {
+    background-color: #fee2e2;
+    color: #991b1b;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* ==================== 8. 页脚样式 ==================== */
+
+footer {
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    margin-top: 4rem;
+    padding: 2rem 0;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.footer-info h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.footer-info p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.footer-social {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.social-link {
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    transition: color 0.2s ease;
+}
+
+.social-link:hover {
+    color: var(--primary-color);
+}
+
+.footer-copyright {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* ==================== 9. 响应式设计 ==================== */
+
+@media (max-width: 1024px) {
+    .lightbox-content {
+        flex-direction: column;
+    }
+    .exif-panel {
+        width: 100%;
+        height: 40%;
+        border-top: 1px solid #e5e7eb;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+    }
+    .lightbox-image-container {
+        height: 60%;
+    }
+}
+
+@media (max-width: 640px) {
+    h1 { font-size: 1.75rem; }
+    .album-meta { flex-direction: column; gap: 0.5rem; }
+    .photo-grid { grid-template-columns: 1fr; }
+    .exif-panel { padding: 1.5rem; }
+    .footer-content { flex-direction: column; gap: 1.5rem; text-align: center; }
+}
+
+/* ==================== 10. 交互效果 ==================== */
+
+/* 平滑滚动 */
+html {
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable;
+}
+
+@supports not (scrollbar-gutter: stable) {
+    html {
+        overflow-y: scroll;
+    }
+}
+
+/* 全局滚动条美化 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* 交互反馈效果 */
+.interactive {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.interactive:active {
+    transform: scale(0.95);
+}
+
+/* ==================== 11. 加载状态和错误提示 ==================== */
+
+/* 加载状态动画 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* 错误提示动画 */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+#error-container {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* 标签样式优化 */
+.tag-badge {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 9999px;
+    background-color: #e5e7eb;
+    color: #4b5563;
+    transition: background-color 0.2s ease;
+}
+
+.tag-badge:hover {
+    background-color: #d1d5db;
+}
+
+/* 相册标签样式 */
+.album-tags {
+    margin-top: 1.5rem;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* 照片卡片样式 */
+.photo-card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease;
+}
+
+.photo-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.photo-thumb-wrapper {
+    overflow: hidden;
+}
+
+.photo-thumb {
+    width: 100%;
+    height: 12rem;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.photo-thumb:hover {
+    transform: scale(1.05);
+}
+
+.photo-info {
+    padding: 1rem;
+}
+
+.photo-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.photo-desc {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .photo-thumb {
+        height: 10rem;
+    }
+    
+    .album-tags {
+        margin-top: 1rem;
+    }
+}
+
+/* 相册卡片样式 */
+.album-card-modern {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease;
+}
+
+.album-card-modern:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.album {
+    position: relative;
+    overflow: hidden;
+}
+
+.album-carousel {
+    width: 100%;
+    height: 100%;
+}
+
+.photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.album-desc-container {
+    position: relative;
+    max-height: 3.5rem;
+    overflow: hidden;
+}
+
+.album-desc {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+}
+
+.album-desc-container:hover .album-desc {
+    overflow: visible;
+    white-space: normal;
+    max-height: none;
+}
+
+.album-desc-container:hover {
+    max-height: none;
+}
+
+.view-album-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    background-color: #667eea;
+    color: white;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.view-album-btn:hover {
+    background-color: #764ba2;
+}
+
+/* ==================== 新版媒体卡片样式 ==================== */
+
+/* 媒体卡片容器 */
+.media-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.media-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 图片展示区 - 4:3比例（占卡片高度 65%） */
+.media-card-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* 4:3 比例 */
+    overflow: hidden;
+    background-color: #f5f5f5;
+    border-radius: 8px 8px 0 0;
+}
+
+.media-card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.media-card:hover .media-card-image {
+    transform: scale(1.03);
+}
+
+/* 图片蒙层 */
+.media-card:hover .media-card-image-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    transition: all 0.2s ease;
+}
+
+/* 类型标识 - 照片 */
+.media-type-photo {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    background-color: rgba(59, 130, 246, 0.8); /* 蓝色 */
+    color: white;
+    font-size: 12px;
+    border-radius: 4px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 类型标识 - 视频 */
+.media-type-video {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    background-color: rgba(249, 115, 22, 0.8); /* 橙色 */
+    color: white;
+    font-size: 12px;
+    border-radius: 4px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 视频播放图标 */
+.video-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.video-play-icon svg {
+    width: 20px;
+    height: 20px;
+    color: #333333;
+    margin-left: 2px; /* 视觉居中调整 */
+}
+
+.media-card:hover .video-play-icon {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* 视频时长标签 */
+.video-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    padding: 2px 6px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 11px;
+    border-radius: 4px;
+    z-index: 2;
+}
+
+/* 快捷操作按钮 */
+.media-card-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.media-card:hover .media-card-actions {
+    opacity: 1;
+}
+
+.media-action-btn {
+    width: 28px;
+    height: 28px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.media-action-btn:hover {
+    background-color: white;
+    transform: scale(1.1);
+}
+
+.media-action-btn svg {
+    width: 14px;
+    height: 14px;
+    color: #333333;
+}
+
+/* 信息区（占卡片高度 25%） */
+.media-card-info {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+/* 信息区每一行 */
+.media-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 20px;
+}
+
+/* 拍摄日期 */
+.media-date {
+    font-size: 12px;
+    color: #666666;
+}
+
+/* EXIF信息 */
+.media-exif {
+    font-size: 11px;
+    color: #888888;
+    text-align: right;
+}
+
+/* 描述文本 */
+.media-description {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+    line-height: 1.4;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.media-card:hover .media-description {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.4;
+}
+
+/* 底部标签区（占卡片高度 10%） */
+.media-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    min-height: 20px;
+}
+
+/* 标签样式 */
+.media-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background-color: #F5F5F5;
+    color: #666666;
+    font-size: 11px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.media-tag:hover {
+    background-color: #E5E5E5;
+    color: #333333;
+}
+
+/* 更多标签按钮 */
+.more-tags {
+    background-color: #E5E5E5;
+    color: #666666;
+    cursor: pointer;
+}
+
+.more-tags:hover {
+    background-color: #D4D4D4;
+    color: #333333;
+}
+
+/* 标签提示框 */
+.tags-tooltip {
+    position: fixed;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    z-index: 1000;
+    max-width: 250px;
+    border: 1px solid #E5E5E5;
+}
+
+.tags-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #ffffff;
+}
+
+/* 照片网格响应式布局 */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding-bottom: 4rem;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .media-card-info {
+        padding: 10px 12px;
+    }
+    
+    .media-date {
+        font-size: 13px;
+    }
+    
+    .media-exif {
+        font-size: 11px;
+    }
+    
+    .media-description {
+        font-size: 11px;
+    }
+    
+    .media-tag {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+}
+
+/* ==================== 预览模态框样式 ==================== */
+
+/* 模态框容器 */
+.preview-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 模态框遮罩 */
+.preview-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+/* 模态框内容 */
+.preview-modal-content {
+    position: relative;
+    z-index: 1001;
+    width: 95vw;
+    height: 90vh;
+    max-width: 1400px;
+    max-height: 900px;
+    display: flex;
+    background-color: rgba(26, 26, 26, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 左侧预览区 */
+.preview-modal-preview {
+    flex: 7;
+    background-color: rgba(26, 26, 26, 0.9);
+    backdrop-filter: blur(10px);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 顶部控制栏 */
+.preview-modal-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.preview-modal-controls button {
+    pointer-events: auto;
+}
+
+/* 右上角下载按钮容器 */
+.preview-modal-top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 11;
+    transition: all 0.3s ease;
+    display: flex;
+    gap: 10px;
+}
+
+/* 控制按钮 */
+.preview-modal-download,
+.preview-modal-prev,
+.preview-modal-next {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(26, 26, 26, 0.9);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.preview-modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #333;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: -5px;
+    margin-right: -5px;
+}
+
+.preview-modal-download:hover,
+.preview-modal-prev:hover,
+.preview-modal-next:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* 下载提示文字 */
+.download-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 50%;
+    transform: translateX(50%);
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+.download-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid rgba(0, 0, 0, 0.85);
+}
+
+.preview-modal-download:hover .download-tooltip {
+    opacity: 1;
+    visibility: visible;
+    top: calc(100% + 12px);
+}
+
+.preview-modal-close:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.preview-modal-close:hover,
+.preview-modal-prev:hover,
+.preview-modal-next:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* 信息区头部 */
+.preview-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.preview-info-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.preview-info-type {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.preview-info-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    height: 32px;
+    line-height: 32px;
+    transition: all 0.3s ease;
+}
+
+.preview-info-title:hover {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.4;
+    height: auto;
+    padding: 2px 0;
+    margin-top: -2px;
+}
+
+/* 拍摄日期 */
+.preview-info-time {
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.preview-info-time::before {
+    content: "📷";
+    font-size: 14px;
+}
+
+.preview-info-time::after {
+    content: " 拍摄日期";
+    font-size: 14px;
+}
+
+/* 媒体预览区 */
+.preview-modal-media {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    overflow: hidden;
+}
+
+/* 照片预览 */
+.preview-modal-photo {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    touch-action: none;
+}
+
+.preview-modal-photo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.1s ease;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+}
+
+.preview-modal-photo img:active {
+    cursor: grabbing;
+}
+
+.preview-modal-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* 视频预览 */
+.preview-modal-video {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.preview-modal-video-player {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    background-color: #000;
+    z-index: 1;
+    border-radius: 4px;
+}
+
+/* 确保视频控制条可见 */
+.preview-modal-video-player::-webkit-media-controls {
+    display: flex !important;
+    opacity: 1 !important;
+}
+
+.preview-modal-video-player::-webkit-media-controls-panel {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.preview-modal-video-player::-webkit-media-controls-play-button,
+.preview-modal-video-player::-webkit-media-controls-current-time-display,
+.preview-modal-video-player::-webkit-media-controls-time-remaining-display,
+.preview-modal-video-player::-webkit-media-controls-volume-control-button,
+.preview-modal-video-player::-webkit-media-controls-mute-button,
+.preview-modal-video-player::-webkit-media-controls-fullscreen-button {
+    filter: invert(1) !important;
+}
+
+.preview-modal-video-player::-webkit-media-controls-current-time-display,
+.preview-modal-video-player::-webkit-media-controls-time-remaining-display {
+    color: #fff !important;
+}
+
+.preview-modal-video .video-js .vjs-big-play-button {
+    width: 84px;
+    height: 84px;
+    border-radius: 9999px;
+    border: 0;
+    left: 50%;
+    top: 50%;
+    margin-left: -42px;
+    margin-top: -42px;
+    background: var(--primary-gradient, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.preview-modal-video .video-js .vjs-big-play-button .vjs-icon-placeholder:before {
+    font-size: 44px;
+    line-height: 84px;
+}
+
+.preview-modal-video .video-js .vjs-big-play-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+    filter: brightness(1.05);
+}
+
+.preview-modal-video .video-js .vjs-control-bar {
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+/* 底部快捷操作栏 - 已移除，下载按钮已移动到顶部 */
+
+/* 右侧信息区 */
+.preview-modal-info {
+    flex: 3;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 32px 24px 24px;
+    overflow-y: auto;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+/* 关闭按钮 */
+.preview-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preview-modal-close:hover {
+    background-color: #fff;
+    color: #333;
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.preview-modal-close:active {
+    transform: rotate(90deg) scale(0.95);
+    transition: all 0.1s ease;
+}
+
+.preview-modal-close i,
+.preview-modal-close svg {
+    width: 16px;
+    height: 16px;
+    transition: all 0.3s ease;
+}
+
+/* 信息区块 */
+.preview-info-section {
+    margin-bottom: 24px;
+}
+
+/* 区块标题 */
+.preview-info-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+/* 信息项 */
+.preview-info-item {
+    display: flex;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* 信息标签 */
+.preview-info-label {
+    color: #666;
+    margin-right: 8px;
+    min-width: 80px;
+    font-weight: 500;
+}
+
+/* 信息值 */
+.preview-info-value {
+    color: #333;
+    font-weight: 500;
+    flex: 1;
+}
+
+/* 描述 */
+.preview-info-description {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+    margin: 0;
+}
+
+/* EXIF参数 */
+.preview-info-exif {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.preview-info-exif-item {
+    display: flex;
+    font-size: 14px;
+}
+
+.preview-info-exif-label {
+    color: #666;
+    margin-right: 8px;
+    min-width: 80px;
+    font-weight: 500;
+}
+
+.preview-info-exif-value {
+    color: #333;
+    font-weight: 500;
+    flex: 1;
+}
+
+/* 标签 */
+.preview-info-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.preview-info-tag {
+    padding: 3px 10px;
+    background-color: #F5F5F5;
+    color: #666;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.preview-info-tag:hover {
+    background-color: #E5E5E5;
+    color: #333;
+}
+
+/* 响应式布局 */
+@media (max-width: 1024px) {
+    .preview-modal-content {
+        flex-direction: column;
+        height: 95vh;
+    }
+    
+    .preview-modal-preview {
+        flex: 2;
+    }
+    
+    .preview-modal-info {
+        flex: 1;
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .preview-modal-content {
+        width: 98vw;
+        height: 98vh;
+    }
+    
+    .preview-modal-controls {
+        padding: 15px;
+    }
+    
+    .preview-modal-media {
+        padding: 50px 15px;
+    }
+    
+    .preview-modal-actions {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .preview-modal-action-btn {
+        min-width: 60px;
+        padding: 8px 12px;
+    }
+    
+    .preview-modal-info {
+        padding: 20px;
+    }
+    
+    .preview-info-exif {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 操作按钮自动隐藏 */
+.preview-modal-controls.hidden,
+.preview-modal-actions.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 滚动条样式 */
+.preview-modal-info::-webkit-scrollbar {
+    width: 6px;
+}
+
+.preview-modal-info::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.preview-modal-info::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.preview-modal-info::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}

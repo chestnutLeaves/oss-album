@@ -1,0 +1,228 @@
+import { MEDIA_TYPES } from './config.js';
+
+// 媒体处理器
+class MediaHandler {
+  // 判断媒体类型
+  getMediaType(file) {
+    if (file.type.startsWith('image/')) {
+      return MEDIA_TYPES.PHOTO;
+    } else if (file.type.startsWith('video/')) {
+      return MEDIA_TYPES.VIDEO;
+    }
+    return null;
+  }
+  
+  // 压缩图片（只压缩质量，不压缩尺寸）
+  async compressImage(file, quality = 0.7) {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      // 根据文件大小调整质量参数
+      // 文件超过10M：质量参数 0.5
+      // 文件不超过10M：质量参数 0.7
+      const adjustedQuality = file.size > 10 * 1024 * 1024 ? 0.5 : 0.7;
+
+      
+      img.onload = () => {
+        // 不压缩尺寸，保持原尺寸
+        const width = img.width;
+        const height = img.height;
+        
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // 转换为 Blob
+        canvas.toBlob((blob) => {
+          resolve(new File([blob], file.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          }));
+        }, 'image/jpeg', adjustedQuality);
+      };
+      
+      img.onerror = () => {
+        resolve(file); // 如果压缩失败，返回原文件
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  }
+  
+  // 提取图片 EXIF 信息
+  async extractEXIF(file) {
+    return new Promise((resolve, reject) => {
+      // 检查 EXIF.js 是否加载
+      if (typeof EXIF === 'undefined') {
+
+        resolve(null);
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            EXIF.getData(img, function() {
+              const exifData = {
+                ISO: EXIF.getTag(this, 'ISOSpeedRatings'),
+                aperture: EXIF.getTag(this, 'FNumber') ? (Array.isArray(EXIF.getTag(this, 'FNumber')) && EXIF.getTag(this, 'FNumber')[1] !== 0 ? `f/${(EXIF.getTag(this, 'FNumber')[0] / EXIF.getTag(this, 'FNumber')[1]).toFixed(1)}` : `f/${EXIF.getTag(this, 'FNumber')}`) : null,
+                shutterSpeed: EXIF.getTag(this, 'ExposureTime') ? `1/${Math.round(1 / EXIF.getTag(this, 'ExposureTime'))}` : null,
+                camera: EXIF.getTag(this, 'Make') && EXIF.getTag(this, 'Model') ? `${EXIF.getTag(this, 'Make')} ${EXIF.getTag(this, 'Model')}` : null,
+                focalLength: EXIF.getTag(this, 'FocalLength') ? (Array.isArray(EXIF.getTag(this, 'FocalLength')) && EXIF.getTag(this, 'FocalLength')[1] !== 0 ? `${(EXIF.getTag(this, 'FocalLength')[0] / EXIF.getTag(this, 'FocalLength')[1]).toFixed(1)}mm` : `${EXIF.getTag(this, 'FocalLength')}mm`) : null,
+                shootTime: EXIF.getTag(this, 'DateTimeOriginal') || EXIF.getTag(this, 'DateTime')
+              };
+              
+              // 过滤掉 null 值
+              const filteredExif = Object.fromEntries(
+                Object.entries(exifData).filter(([_, value]) => value !== null && value !== undefined)
+              );
+              
+              resolve(filteredExif);
+            });
+          } catch (error) {
+            console.error('提取 EXIF 信息失败:', error);
+            resolve(null);
+          }
+        };
+        img.onerror = () => {
+          resolve(null);
+        };
+        img.src = e.target.result;
+      };
+      reader.onerror = () => {
+        resolve(null);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  
+  // 截取视频封面
+  async captureVideoThumbnail(file) {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      video.src = URL.createObjectURL(file);
+      video.crossOrigin = 'anonymous';
+      
+      video.addEventListener('loadeddata', () => {
+        // 设置视频播放位置为第一帧
+        video.currentTime = 0.1;
+      });
+      
+      video.addEventListener('seeked', () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          
+          // 将 canvas 转换为 Blob
+          canvas.toBlob((blob) => {
+            URL.revokeObjectURL(video.src);
+            resolve(blob);
+          }, 'image/jpeg', 0.8);
+        } catch (error) {
+          console.error('截取视频封面失败:', error);
+          URL.revokeObjectURL(video.src);
+          resolve(null);
+        }
+      });
+      
+      video.addEventListener('error', () => {
+        URL.revokeObjectURL(video.src);
+        resolve(null);
+      });
+    });
+  }
+  
+  // 处理媒体文件
+  async processMedia(file) {
+    const type = this.getMediaType(file);
+    if (!type) {
+      throw new Error('不支持的文件类型');
+    }
+    
+    const result = {
+      type,
+      originalFilename: file.name,
+      exifInfo: null,
+      shootTime: null,
+      thumbnail: null,
+      compressedFile: null
+    };
+    
+    if (type === MEDIA_TYPES.PHOTO) {
+      // 处理图片
+      const exifInfo = await this.extractEXIF(file);
+      result.exifInfo = exifInfo;
+      
+      // 从 EXIF 中提取拍摄时间
+      if (exifInfo && exifInfo.shootTime) {
+        // 格式化 EXIF 时间字符串 (YYYY:MM:DD HH:MM:SS)
+        const shootTimeStr = exifInfo.shootTime;
+        try {
+          // 正确处理 EXIF 时间格式
+          const parts = shootTimeStr.split(' ');
+          const datePart = parts[0].replace(/:/g, '-');
+          const timePart = parts[1] || '00:00:00';
+          const formattedTime = `${datePart} ${timePart}`;
+          const date = new Date(formattedTime);
+          if (!isNaN(date.getTime())) {
+            result.shootTime = date.toISOString();
+          } else {
+            result.shootTime = new Date().toISOString();
+          }
+        } catch (error) {
+          console.error('日期转换失败:', error);
+          result.shootTime = new Date().toISOString();
+        }
+      } else {
+        result.shootTime = new Date().toISOString();
+      }
+      
+      // 压缩图片
+      result.compressedFile = await this.compressImage(file, 0.7, 1920);
+    } else if (type === MEDIA_TYPES.VIDEO) {
+      // 处理视频
+      const thumbnailBlob = await this.captureVideoThumbnail(file);
+      result.thumbnail = thumbnailBlob;
+      result.shootTime = new Date().toISOString();
+    }
+    
+    return result;
+  }
+  
+  // 生成随机文件名
+  generateFileName(type, originalFilename) {
+    const date = new Date();
+    const dateStr = `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}`;
+    const randomStr = Math.random().toString(36).substring(2, 10);
+    const ext = originalFilename.split('.').pop();
+    return `${type}/${dateStr}/${randomStr}.${ext}`;
+  }
+  
+  // 生成 OSS 路径（旧方法，保留兼容性）
+  generateOSSPath(file, albumId, type) {
+    const timestamp = new Date().getTime();
+    const randomStr = Math.random().toString(36).substring(2, 8);
+    const extension = file.name.split('.').pop();
+    const filename = `${timestamp}_${randomStr}.${extension}`;
+    
+    return `album/${albumId}/${type.toLowerCase()}/${filename}`;
+  }
+  
+  // 生成视频封面 OSS 路径（旧方法，保留兼容性）
+  generateCoverOSSPath(albumId) {
+    const timestamp = new Date().getTime();
+    const randomStr = Math.random().toString(36).substring(2, 8);
+    return `album/${albumId}/covers/cover_${timestamp}_${randomStr}.jpg`;
+  }
+}
+
+// 导出单例
+export const mediaHandler = new MediaHandler();

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <!-- Video.js CSS -->
+    <link rel="stylesheet" href="https://vjs.zencdn.net/8.6.1/video-js.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Page Container */
+        .page {
+            width: 100%;
+            padding: 2rem 0;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            display: none; /* Hidden by default, toggled by JS */
+            flex: 1 0 auto;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* 导航栏增强 - 与首页一致 */
+        .header-enhanced {
+            height: 80px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            background: #ffffff;
+        }
+        
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            width: 100%;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-logo {
+            width: 3rem;
+            height: 3rem;
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+
+        .brand-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 导航菜单 */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .nav-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+        
+        .nav-item i {
+            width: 16px;
+            text-align: center;
+        }
+        
+        .nav-item:hover {
+            color: #667eea;
+            background-color: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 返回首页按钮 */
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            text-decoration: none;
+        }
+
+        .back-home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Header & Search Area */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-top: 0;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Tag Cloud Area */
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+        }
+
+        /* 标签样式 - 保留当前样式但确保大小一致 */
+        .tag-item {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 1rem !important;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* 不同颜色的标签 */
+        .tag-item.color-1 { background-color: #e0f2fe; color: #0284c7; }
+        .tag-item.color-2 { background-color: #dbeafe; color: #1e40af; }
+        .tag-item.color-3 { background-color: #ede9fe; color: #6d28d9; }
+        .tag-item.color-4 { background-color: #fce7f3; color: #be185d; }
+        .tag-item.color-5 { background-color: #fee2e2; color: #b91c1c; }
+        .tag-item.color-6 { background-color: #fed7aa; color: #c2410c; }
+        .tag-item.color-7 { background-color: #fef3c7; color: #d97706; }
+        .tag-item.color-8 { background-color: #dcfce7; color: #059669; }
+        .tag-item.color-9 { background-color: #e0e7ff; color: #4f46e5; }
+        .tag-item.color-10 { background-color: #f3e8ff; color: #7e22ce; }
+        .tag-item.color-11 { background-color: #fef2f2; color: #dc2626; }
+        .tag-item.color-12 { background-color: #fefce8; color: #ca8a04; }
+        .tag-item.color-13 { background-color: #ecfccb; color: #65a30d; }
+        .tag-item.color-14 { background-color: #dbeafe; color: #1d4ed8; }
+        .tag-item.color-15 { background-color: #ede9fe; color: #7c3aed; }
+
+        .tag-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tag-item.active {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        /* Search Results Grid */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .type-filters {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .type-filter-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.75rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            color: var(--text-sub);
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            line-height: 1;
+        }
+
+        .type-filter-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--text-main);
+        }
+
+        .type-filter-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .media-type-badge {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            z-index: 2;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            line-height: 1;
+            background: rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+            backdrop-filter: blur(6px);
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            color: var(--text-sub);
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-reset:hover {
+            border-color: var(--text-sub);
+            color: var(--text-main);
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Photo Card */
+        .photo-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .photo-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-image-wrapper {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background-color: #e2e8f0;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .photo-card:hover .card-image {
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .card-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            background-color: #f1f5f9;
+            color: var(--text-sub);
+            border-radius: 9999px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--text-sub);
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .header-enhanced {
+                height: auto;
+                padding: 1rem 0;
+            }
+            
+            .brand-title {
+                font-size: 1.25rem;
+            }
+            
+            .photo-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 - 与首页一致 -->
+    <header class="header-enhanced sticky top-0 z-50">
+        <div class="container mx-auto px-6 h-full">
+            <div class="header-inner flex items-center h-full">
+                <!-- 左侧品牌区域 -->
+                <div class="brand-container">
+                    <div class="brand-logo w-12 h-12 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-images text-white text-xl"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h1 class="brand-title bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"></h1>
+                        <p class="text-xs text-gray-500 font-medium"></p>
+                    </div>
+                </div>
+                
+                <!-- 右侧导航 -->
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-item">
+                        <i class="fas fa-home mr-2"></i>首页
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-cog mr-2"></i>管理
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Page Container -->
+    <main id="tags-page" class="page active">
+        <div class="container mx-auto px-6">
+            <header>
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="搜索标题、描述或标签..." aria-label="搜索照片">
+                </div>
+                <!-- Tag Cloud directly below search box -->
+                <div id="tag-cloud" class="tag-cloud">
+                    <!-- Tags will be dynamically generated here -->
+                </div>
+            </header>
+
+            <!-- Search Results Section -->
+            <section>
+                <div class="results-header">
+                    <h2 class="section-title" style="margin-bottom: 0;">搜索结果</h2>
+                    <button id="show-all-btn" class="btn-reset" style="display: none;">显示全部照片</button>
+                </div>
+                <div id="search-results" class="photo-grid">
+                    <!-- Photo cards will be dynamically generated here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 预览模态框 -->
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-modal-overlay" id="previewModalOverlay"></div>
+        <div class="preview-modal-content">
+            <!-- 左侧预览区 -->
+            <div class="preview-modal-preview">
+                <!-- 顶部控制栏 -->
+                <div class="preview-modal-controls" id="previewControls">
+                    <button class="preview-modal-prev" id="previewPrev" aria-label="上一张">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="preview-modal-next" id="previewNext" aria-label="下一张">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <!-- 右上角按钮 -->
+                <div class="preview-modal-top-right">
+                    <button class="preview-modal-download" id="previewViewAlbum" type="button" aria-label="查看相册">
+                        <i class="fas fa-images"></i>
+                        <span class="download-tooltip">查看相册</span>
+                    </button>
+                    <button class="preview-modal-download" id="previewDownload" title="下载源文件" type="button" aria-label="下载源文件">
+                        <i class="fas fa-download"></i>
+                        <span class="download-tooltip">下载源文件</span>
+                    </button>
+                </div>
+                
+                <!-- 媒体预览区 -->
+                <div class="preview-modal-media" id="previewMedia">
+                    <!-- 照片预览 -->
+                    <div class="preview-modal-photo" id="previewPhoto">
+                        <img src="" alt="" class="preview-modal-img" id="previewImg">
+                    </div>
+                    <!-- 视频预览 -->
+                    <div class="preview-modal-video" id="previewVideo" style="display: none;">
+                        <video class="video-js vjs-default-skin vjs-big-play-centered preview-modal-video-player" id="previewVideoPlayer" preload="metadata" playsinline>
+                            <source src="" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧信息区 -->
+            <div class="preview-modal-info" id="previewInfo">
+                <!-- 关闭按钮 -->
+                <button class="preview-modal-close" id="previewClose" aria-label="关闭预览">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <!-- 文件信息 -->
+                <div class="preview-info-section">
+                    <div class="preview-info-item">
+                        <span class="preview-info-label">文件：</span>
+                        <span class="preview-info-value" id="previewFilename"></span>
+                    </div>
+                    <div class="preview-info-item">
+                        <span class="preview-info-label">拍摄日期：</span>
+                        <span class="preview-info-value" id="previewTime"></span>
+                    </div>
+                </div>
+                
+                <!-- 描述 -->
+                <div class="preview-info-section" id="descriptionSection">
+                    <div class="preview-info-section-title">描述</div>
+                    <div class="preview-info-description" id="previewDescription"></div>
+                </div>
+                
+                <!-- 拍摄参数 -->
+                <div class="preview-info-section" id="exifSection">
+                    <div class="preview-info-section-title">拍摄参数</div>
+                    <div class="preview-info-exif" id="previewExif"></div>
+                </div>
+                
+                <!-- 标签 -->
+                <div class="preview-info-section" id="tagsSection">
+                    <div class="preview-info-section-title">标签</div>
+                    <div class="preview-info-tags" id="previewTags"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video.js JS -->
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script type="module" src="assets/js/script.js"></script>
+
+    <!-- 页脚 - 与首页一致 -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="container mx-auto px-4 py-1">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-1 md:mb-0 flex items-center space-x-3">
+                    <img src="assets/images/logo.png" alt="我崽最可爱" class="w-12 h-12 rounded-lg flex-shrink-0">
+                    <div>
+                        <h3 class="text-lg font-bold transition-all duration-300 hover:text-indigo-600">把瞬间，变成永远</h3>
+                        <p class="text-gray-500 text-sm transition-all duration-300 hover:text-indigo-500">每一张照片，都是时光的标本</p>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button class="text-gray-600 hover:text-indigo-600 interactive transition-colors relative group" onclick="navigator.clipboard.writeText('liuyupingmail@qq.com'); alert('邮箱已复制到剪贴板')">
+                        <i class="fas fa-envelope text-lg"></i>
+                        <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">liuyupingmail@qq.com</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-100 mt-2 pt-2 text-center text-gray-500 text-xs">
+                <p>&copy; 2026 栗子叶AI生成项目 | <a href="https://beian.miit.gov.cn/" target="_blank" class="hover:text-indigo-600 transition-all duration-300">京ICP备19021366号</a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
