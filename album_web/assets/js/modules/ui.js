@@ -147,7 +147,7 @@ export async function renderBanners() {
         const bannerHtml = `
             <div class="carousel-item min-w-full relative">
                 <img src="${imageUrl}" alt="${banner.title}" class="carousel-img w-full h-[450px] md:h-[550px] object-cover cursor-pointer transition-transform duration-300 hover:scale-105">
-                <div class="carousel-caption-bg absolute inset-0 flex items-end justify-start pb-16 px-12">
+                <div class="carousel-caption-bg absolute flex items-end justify-start pb-16 px-12">
                     <div class="text-left text-white max-w-2xl">
                         <h3 class="text-4xl md:text-5xl font-bold mb-3 drop-shadow-lg tracking-tight">${banner.title}</h3>
                         <p class="text-xl opacity-95 drop-shadow-md font-light">${banner.description || ''}</p>
