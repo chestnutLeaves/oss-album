@@ -33,14 +33,14 @@
             --border-radius-lg: 16px;
             --border-radius-full: 9999px;
         }
-        
+
         /* 自定义样式增强 */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             color: var(--text-primary);
             background-color: var(--bg-gray);
         }
-        
+
         /* 导航栏增强 */
         .header-enhanced {
             height: 80px;
@@ -50,7 +50,7 @@
             top: 0;
             z-index: 50;
         }
-        
+
         .header-inner {
             display: flex;
             align-items: center;
@@ -58,14 +58,14 @@
             height: 100%;
             width: 100%;
         }
-        
+
         /* 品牌区域对齐优化 */
         .brand-container {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-        
+
         .brand-logo {
             width: 3rem;
             height: 3rem;
@@ -77,19 +77,19 @@
             justify-content: center;
             box-shadow: var(--shadow-md);
         }
-        
+
         .brand-logo i {
             color: white;
             font-size: 1.25rem;
         }
-        
+
         .brand-text {
             display: flex;
             flex-direction: column;
             justify-content: center;
             gap: 0.25rem;
         }
-        
+
         .brand-title {
             font-size: 1.75rem;
             font-weight: 700;
@@ -100,13 +100,13 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .brand-subtitle {
             font-size: 0.75rem;
             color: var(--text-tertiary);
             font-weight: 500;
         }
-        
+
         /* 导航菜单 */
         .nav-menu {
             display: flex;
@@ -114,7 +114,7 @@
             gap: 1rem;
             flex-shrink: 0;
         }
-        
+
         .nav-item {
             display: inline-flex;
             align-items: center;
@@ -128,24 +128,24 @@
             text-decoration: none;
             border: 1px solid transparent;
         }
-        
+
         .nav-item i {
             width: 16px;
             text-align: center;
         }
-        
+
         .nav-item:hover {
             color: var(--primary-color);
             background-color: rgba(102, 126, 234, 0.1);
             border-color: rgba(102, 126, 234, 0.2);
         }
-        
+
         .nav-item.active {
             background: var(--primary-gradient);
             color: white;
             box-shadow: var(--shadow-md);
         }
-        
+
         /* 管理按钮样式 */
         .admin-btn {
             display: inline-flex;
@@ -161,54 +161,54 @@
             border: 1px solid var(--border-color);
             background-color: var(--bg-white);
         }
-        
+
         .admin-btn:hover {
             color: var(--primary-color);
             border-color: var(--primary-color);
             background-color: rgba(102, 126, 234, 0.1);
         }
-        
+
         /* 响应式布局优化 */
         @media (max-width: 768px) {
             .header-enhanced {
                 height: auto;
                 padding: 0.75rem 0;
             }
-            
+
             .header-inner {
                 flex-direction: column;
                 gap: 0.75rem;
                 padding: 0 0.75rem;
             }
-            
+
             .brand-container {
                 gap: 0.5rem;
             }
-            
+
             .brand-logo {
                 width: 2.5rem;
                 height: 2.5rem;
             }
-            
+
             .brand-logo i {
                 font-size: 1rem;
             }
-            
+
             .brand-title {
                 font-size: 1.25rem;
                 line-height: 1.3;
             }
-            
+
             .brand-subtitle {
                 font-size: 0.65rem;
             }
-            
+
             .nav-menu {
                 flex-wrap: wrap;
                 justify-content: center;
                 gap: 0.5rem;
             }
-            
+
             .nav-item {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.8rem;
@@ -217,162 +217,165 @@
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
-    <!-- 顶部导航栏 - 增强版 -->
-    <header class="header-enhanced sticky top-0 z-50">
-        <div class="container mx-auto px-6 h-full">
-            <div class="header-inner flex items-center h-full">
-                <!-- 左侧品牌区域 - 对齐优化 -->
-                <div class="brand-container">
-                    <div class="brand-logo w-12 h-12 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                        <i class="fas fa-images text-white text-xl"></i>
-                    </div>
-                    <div class="brand-text">
-                        <h1 class="brand-title bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"></h1>
-                        <p class="text-xs text-gray-500 font-medium"></p>
-                    </div>
+<!-- 顶部导航栏 - 增强版 -->
+<header class="header-enhanced sticky top-0 z-50">
+    <div class="container mx-auto px-6 h-full">
+        <div class="header-inner flex items-center h-full">
+            <!-- 左侧品牌区域 - 对齐优化 -->
+            <div class="brand-container">
+                <div class="brand-logo w-12 h-12 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-images text-white text-xl"></i>
                 </div>
-                
-                <!-- 右侧导航 + 管理按钮 -->
-                <div class="nav-menu">
-                    <a href="index.html" class="nav-item">
-                        <i class="fas fa-home mr-2"></i>首页
-                    </a>
-                    <a href="tags.html" class="nav-item">
-                        <i class="fas fa-compass mr-2"></i>探索
-                    </a>
-                    <a href="#" class="nav-item">
-                        <i class="fas fa-cog mr-2"></i>管理
-                    </a>
+                <div class="brand-text">
+                    <h1 class="brand-title bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"></h1>
+                    <p class="text-xs text-gray-500 font-medium"></p>
                 </div>
             </div>
-        </div>
-    </header>
 
-    <!-- 相册头部 -->
-    <header class="album-header" style="display: none;">
-        <div class="container">
-            <!-- 标签筛选器 -->
-            <nav class="filter-section mb-6" id="filterContainer">
-            </nav>
-            
-            <div class="album-meta">
-            </div>
-            <h1 class="album-title"></h1>
-            <p class="album-description">
-            </p>
-        </div>
-    </header>
-
-    <!-- 主体内容 -->
-    <main class="container" style="display: none;">
-        <!-- 照片网格 -->
-        <section class="photo-grid" id="photoGrid">
-        </section>
-    </main>
-
-    <!-- 预览模态框 -->
-    <div class="preview-modal" id="previewModal">
-        <div class="preview-modal-overlay" id="previewModalOverlay"></div>
-        <div class="preview-modal-content">
-            <!-- 左侧预览区 -->
-            <div class="preview-modal-preview">
-                <!-- 顶部控制栏 -->
-                <div class="preview-modal-controls" id="previewControls">
-                    <button class="preview-modal-prev" id="previewPrev" aria-label="上一张">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="preview-modal-next" id="previewNext" aria-label="下一张">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-                
-                <!-- 右上角下载按钮 -->
-                <div class="preview-modal-top-right">
-                    <button class="preview-modal-download" id="previewDownload" title="下载源文件">
-                        <i class="fas fa-download"></i>
-                    </button>
-                </div>
-                
-                <!-- 媒体预览区 -->
-                <div class="preview-modal-media" id="previewMedia">
-                    <!-- 照片预览 -->
-                    <div class="preview-modal-photo" id="previewPhoto">
-                        <img src="" alt="" class="preview-modal-img" id="previewImg">
-                    </div>
-                    <!-- 视频预览 -->
-                    <div class="preview-modal-video" id="previewVideo" style="display: none;">
-                        <video class="video-js vjs-default-skin vjs-big-play-centered preview-modal-video-player" id="previewVideoPlayer" preload="metadata" playsinline>    
-                            <source src="" type="video/mp4">
-                        </video>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 右侧信息区 -->
-            <div class="preview-modal-info" id="previewInfo">
-                <!-- 关闭按钮 -->
-                <button class="preview-modal-close" id="previewClose" aria-label="关闭预览">
-                    <i class="fas fa-times"></i>
-                </button>
-                
-                <!-- 文件信息 -->
-                <div class="preview-info-section">
-                    <div class="preview-info-item">
-                        <span class="preview-info-label">文件：</span>
-                        <span class="preview-info-value" id="previewFilename"></span>
-                    </div>
-                    <div class="preview-info-item">
-                        <span class="preview-info-label">拍摄日期：</span>
-                        <span class="preview-info-value" id="previewTime"></span>
-                    </div>
-                </div>
-                
-                <!-- 描述 -->
-                <div class="preview-info-section" id="descriptionSection">
-                    <div class="preview-info-section-title">描述</div>
-                    <div class="preview-info-description" id="previewDescription"></div>
-                </div>
-                
-                <!-- 拍摄参数 -->
-                <div class="preview-info-section" id="exifSection">
-                    <div class="preview-info-section-title">拍摄参数</div>
-                    <div class="preview-info-exif" id="previewExif"></div>
-                </div>
-                
-                <!-- 标签 -->
-                <div class="preview-info-section" id="tagsSection">
-                    <div class="preview-info-section-title">标签</div>
-                    <div class="preview-info-tags" id="previewTags"></div>
-                </div>
+            <!-- 右侧导航 + 管理按钮 -->
+            <div class="nav-menu">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home mr-2"></i>首页
+                </a>
+                <a href="tags.html" class="nav-item">
+                    <i class="fas fa-compass mr-2"></i>探索
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog mr-2"></i>管理
+                </a>
             </div>
         </div>
     </div>
+</header>
 
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-        <div class="container mx-auto px-4 py-1">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-1 md:mb-0 flex items-center space-x-3">
-                    <img src="assets/images/logo.png" alt="我崽最可爱" class="w-12 h-12 rounded-lg flex-shrink-0">
-                    <div>
-                        <h3 class="text-lg font-bold transition-all duration-300 hover:text-indigo-600">把瞬间，变成永远</h3>
-                        <p class="text-gray-500 text-sm transition-all duration-300 hover:text-indigo-500">每一张照片，都是时光的标本</p>
-                    </div>
-                </div>
-                
-                <div class="flex space-x-4">
-                    <button class="text-gray-600 hover:text-indigo-600 interactive transition-colors relative group" onclick="navigator.clipboard.writeText('liuyupingmail@qq.com'); alert('邮箱已复制到剪贴板')">
-                        <i class="fas fa-envelope text-lg"></i>
-                        <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">liuyupingmail@qq.com</span>
-                    </button>
-                </div>
+<!-- 相册头部 -->
+<header class="album-header" style="display: none;">
+    <div class="container">
+        <!-- 标签筛选器 -->
+        <nav class="filter-section mb-6" id="filterContainer">
+        </nav>
+
+        <div class="album-meta">
+        </div>
+        <h1 class="album-title"></h1>
+        <p class="album-description">
+        </p>
+    </div>
+</header>
+
+<!-- 主体内容 -->
+<main class="container" style="display: none;">
+    <!-- 照片网格 -->
+    <section class="photo-grid" id="photoGrid">
+    </section>
+</main>
+
+<!-- 预览模态框 -->
+<div class="preview-modal" id="previewModal">
+    <div class="preview-modal-overlay" id="previewModalOverlay"></div>
+    <div class="preview-modal-content">
+        <!-- 关闭按钮 -->
+        <button class="preview-modal-close" id="previewClose" aria-label="关闭预览">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- 左侧预览区 -->
+        <div class="preview-modal-preview">
+            <!-- 顶部控制栏 -->
+            <div class="preview-modal-controls" id="previewControls">
+                <button class="preview-modal-prev" id="previewPrev" aria-label="上一张">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="preview-modal-next" id="previewNext" aria-label="下一张">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
-            
-            <div class="border-t border-gray-100 mt-2 pt-2 text-center text-gray-500 text-xs">
-                <p>&copy; 2026 栗子叶AI生成项目 | <a href="https://beian.miit.gov.cn/" target="_blank" class="hover:text-indigo-600 transition-all duration-300">京ICP备19021366号</a></p>
+
+            <!-- 右上角下载按钮 -->
+            <div class="preview-modal-top-right">
+                <button class="preview-modal-download" id="previewDownload" title="下载源文件">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
+
+            <!-- 媒体预览区 -->
+            <div class="preview-modal-media" id="previewMedia">
+                <!-- 照片预览 -->
+                <div class="preview-modal-photo" id="previewPhoto">
+                    <img src="" alt="" class="preview-modal-img" id="previewImg">
+                </div>
+                <!-- 视频预览 -->
+                <div class="preview-modal-video" id="previewVideo" style="display: none;">
+                    <video class="video-js vjs-default-skin vjs-big-play-centered preview-modal-video-player" id="previewVideoPlayer" preload="metadata" playsinline>
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
             </div>
         </div>
-    </footer>
+
+        <!-- 右侧信息区 -->
+        <div class="preview-modal-info" id="previewInfo">
+
+            <!-- 文件信息 -->
+            <div class="preview-info-section">
+                <div class="preview-info-item">
+                    <span class="preview-info-label">文件：</span>
+                    <span class="preview-info-value" id="previewFilename"></span>
+                </div>
+                <div class="preview-info-item">
+                    <span class="preview-info-label">拍摄日期：</span>
+                    <span class="preview-info-value" id="previewTime"></span>
+                </div>
+            </div>
+
+            <!-- 描述 -->
+            <div class="preview-info-section" id="descriptionSection">
+                <div class="preview-info-section-title">描述</div>
+                <div class="preview-info-description" id="previewDescription"></div>
+            </div>
+
+            <!-- 拍摄参数 -->
+            <div class="preview-info-section" id="exifSection">
+                <div class="preview-info-section-title">拍摄参数</div>
+                <div class="preview-info-exif" id="previewExif"></div>
+            </div>
+
+            <!-- 标签 -->
+            <div class="preview-info-section" id="tagsSection">
+                <div class="preview-info-section-title">标签</div>
+                <div class="preview-info-tags" id="previewTags"></div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<footer class="bg-white border-t border-gray-200 mt-auto">
+    <div class="container mx-auto px-4 py-1">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-1 md:mb-0 flex items-center space-x-3">
+                <img src="assets/images/logo.png" alt="我崽最可爱" class="w-12 h-12 rounded-lg flex-shrink-0">
+                <div>
+                    <h3 class="text-lg font-bold transition-all duration-300 hover:text-indigo-600">把瞬间，变成永远</h3>
+                    <p class="text-gray-500 text-sm transition-all duration-300 hover:text-indigo-500">每一张照片，都是时光的标本</p>
+                </div>
+            </div>
+
+            <div class="flex space-x-4">
+                <button class="text-gray-600 hover:text-indigo-600 interactive transition-colors relative group" onclick="navigator.clipboard.writeText('liuyupingmail@qq.com'); alert('邮箱已复制到剪贴板')">
+                    <i class="fas fa-envelope text-lg"></i>
+                    <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">liuyupingmail@qq.com</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-100 mt-2 pt-2 text-center text-gray-500 text-xs">
+            <p>&copy; 2026 栗子叶AI生成项目 | <a href="https://beian.miit.gov.cn/" target="_blank" class="hover:text-indigo-600 transition-all duration-300">京ICP备19021366号</a></p>
+        </div>
+    </div>
+</footer>
 </body>
-    <!-- Video.js JS -->
-    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+<!-- Video.js JS -->
+<script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
 </html>

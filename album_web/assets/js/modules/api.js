@@ -34,29 +34,51 @@ export async function loadSiteConfig() {
                 'Referer': window.location.href
             }
         });
-        
-        const result = await response.json();
-        
+
+        console.log('Response status:', response.status);
+
+        // 检查响应是否成功
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // 先获取响应文本，以便在JSON解析失败时查看
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+
+        // 尝试解析JSON
+        let result;
+        try {
+            result = JSON.parse(responseText);
+            console.log('Parsed result:', result);
+        } catch (jsonError) {
+            console.error('JSON parse error:', jsonError);
+            console.error('Response text causing error:', responseText);
+            // JSON解析失败，显示错误
+            showError('数据解析失败，请稍后重试');
+            return null;
+        }
+
         if (result.code === 0) {
             const config = result.data;
-            
+
             // 更新页面标题
             if (config.title) {
                 document.title = config.title + ' - 个人相册';
             }
-            
+
             // 更新品牌标题和描述
             const brandTitle = document.querySelector('.brand-title');
             const brandSubtitle = document.querySelector('.brand-text p');
-            
+
             if (brandTitle && config.title) {
                 brandTitle.textContent = config.title;
             }
-            
+
             if (brandSubtitle && config.description) {
                 brandSubtitle.textContent = config.description;
             }
-            
+
             // 更新管理按钮链接
             if (config.adminUrl) {
                 const adminButtons = document.querySelectorAll('.nav-item i.fa-cog, .nav-item i.fas.fa-cog, .nav-item svg.fa-gear, .nav-item svg.fas.fa-gear');
@@ -69,14 +91,23 @@ export async function loadSiteConfig() {
                     }
                 });
             }
-            
+
             return config;
+        } else if (result.code === 3001) {  // 站点不存在
+            console.error('站点不存在:', result.message || result.msg);
+            // 跳转到站点不存在错误页（使用配置文件）
+            window.location.href = ERROR_PAGES.SITE_NOT_FOUND;
+            return null;
         } else {
-            console.error('获取站点配置失败:', result.msg || result.message);
+            console.error('获取站点配置失败:', result.message || result.msg);
+            // 显示错误信息
+            showError(result.message || result.msg || '获取站点配置失败');
             return null;
         }
     } catch (error) {
         console.error('获取站点配置错误:', error);
+        // 网络错误，跳转到错误页（使用配置文件）
+        window.location.href = ERROR_PAGES.NETWORK_ERROR;
         return null;
     }
 }
@@ -92,18 +123,18 @@ export async function loadSiteInfo() {
                 'Referer': window.location.href
             }
         });
-        
+
         console.log('Response status:', response.status);
-        
+
         // 检查响应是否成功
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         // 先获取响应文本，以便在JSON解析失败时查看
         const responseText = await response.text();
         console.log('Response text:', responseText);
-        
+
         // 尝试解析JSON
         let result;
         try {
@@ -116,10 +147,10 @@ export async function loadSiteInfo() {
             showError('数据解析失败，请稍后重试');
             return;
         }
-        
+
         if (result.code === 0) {  // 新的成功响应码
             const data = result.data;
-            
+
             // 检查数据结构，适配不同的返回格式
             if (data.site) {
                 // 标准格式：data.site包含站点信息
@@ -135,7 +166,7 @@ export async function loadSiteInfo() {
                     albums: data.albums || []
                 };
             }
-            
+
             // 更新管理按钮链接
             const adminUrl = data.adminUrl || (siteData.site && siteData.site.adminUrl);
             if (adminUrl) {
@@ -149,7 +180,7 @@ export async function loadSiteInfo() {
                     }
                 });
             }
-            
+
             // 为每个相册添加id属性（如果不存在）
             if (siteData.albums && Array.isArray(siteData.albums)) {
                 siteData.albums.forEach((album, index) => {
@@ -159,7 +190,7 @@ export async function loadSiteInfo() {
                     }
                 });
             }
-            
+
             // 更新页面标题
             if (siteData.site.title) {
                 document.title = siteData.site.title + ' - 个人相册';
@@ -191,9 +222,9 @@ export async function loadTags() {
                 'Referer': window.location.href
             }
         });
-        
+
         const result = await response.json();
-        
+
         if (result.code === 0) {
             tagsData = result.data;
         } else {
@@ -212,31 +243,31 @@ export async function loadTags() {
 export async function searchMedia(keyword = '', tagIds = []) {
     try {
         showLoading('搜索中...');
-        
+
         const params = new URLSearchParams();
-        
+
         if (keyword) {
             params.append('keyword', keyword);
         }
-        
+
         if (tagIds && tagIds.length > 0) {
             tagIds.forEach(id => params.append('tagIds', id));
         }
-        
+
         const queryString = params.toString();
-        const url = queryString 
+        const url = queryString
             ? `${API_BASE_URL}/api/open/search/media?${queryString}`
             : `${API_BASE_URL}/api/open/search/media`;
-        
+
         const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Referer': window.location.href
             }
         });
-        
+
         const result = await response.json();
-        
+
         if (result.code === 0) {
             currentMediaList = result.data;
             return currentMediaList;
@@ -263,12 +294,12 @@ function showNonClosableAlert(message) {
     if (existingAlert) {
         existingAlert.remove();
     }
-    
+
     // 创建弹窗容器
     const alertContainer = document.createElement('div');
     alertContainer.id = 'non-closable-alert';
     alertContainer.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50';
-    
+
     // 创建弹窗内容
     alertContainer.innerHTML = `
         <div class="bg-white rounded-lg p-6 shadow-2xl max-w-md w-full">
@@ -284,7 +315,7 @@ function showNonClosableAlert(message) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(alertContainer);
 }
 
@@ -297,7 +328,7 @@ function showPasswordModal(albumId, callback) {
     if (existingModal) {
         existingModal.remove();
     }
-    
+
     // 创建弹窗容器
     const modalContainer = document.createElement('div');
     modalContainer.id = 'password-modal';
@@ -315,10 +346,10 @@ function showPasswordModal(albumId, callback) {
         z-index: 1000;
         overflow: hidden;
     `;
-    
+
     // 阻止背景页面滚动
     document.body.style.overflow = 'hidden';
-    
+
     // 创建弹窗内容
     modalContainer.innerHTML = `
         <div style="
@@ -391,40 +422,40 @@ function showPasswordModal(albumId, callback) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modalContainer);
-    
+
     // 绑定事件
     const passwordInput = document.getElementById('password-input');
     const confirmBtn = document.getElementById('confirm-btn');
-    
+
     // 确认按钮
-        confirmBtn.addEventListener('click', () => {
-            const password = passwordInput.value.trim();
-            if (password) {
-                // 不立即关闭弹窗，等待验证结果
-                // 显示加载状态
-                confirmBtn.disabled = true;
-                confirmBtn.textContent = '验证中...';
-                
-                // 调用回调，传入密码和关闭弹窗的函数
-                callback(password, () => {
-                    modalContainer.remove();
-                    // 恢复背景页面滚动
-                    document.body.style.overflow = '';
-                });
-            } else {
-                showError('请输入密码');
-            }
-        });
-    
+    confirmBtn.addEventListener('click', () => {
+        const password = passwordInput.value.trim();
+        if (password) {
+            // 不立即关闭弹窗，等待验证结果
+            // 显示加载状态
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = '验证中...';
+
+            // 调用回调，传入密码和关闭弹窗的函数
+            callback(password, () => {
+                modalContainer.remove();
+                // 恢复背景页面滚动
+                document.body.style.overflow = '';
+            });
+        } else {
+            showError('请输入密码');
+        }
+    });
+
     // 按Enter键确认
     passwordInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             confirmBtn.click();
         }
     });
-    
+
     // 自动聚焦到密码输入框
     passwordInput.focus();
 }
@@ -439,41 +470,41 @@ export async function loadAlbumDetail(albumId, password = null) {
         if (password) {
             params.append('password', password);
         }
-        
+
         const response = await fetch(`${API_BASE_URL}/api/open/albums/detail?${params.toString()}`, {
             method: 'GET',
             headers: {
                 'Referer': window.location.href
             }
         });
-        
+
         const result = await response.json();
-        
+
         if (result.code === 0) {
             const albumData = result.data;
-            
+
             // 缓存密码（如果提供了密码）
             if (password) {
                 saveAlbumPassword(albumId, password);
             }
-            
+
             // 更新页面标题
             document.title = albumData.title + ' - 个人相册';
-            
+
             // 渲染标签筛选器
             if (albumData.tags && albumData.tags.length > 0) {
                 const filterContainer = document.getElementById('filterContainer');
                 if (filterContainer) {
                     // 清空现有内容
                     filterContainer.innerHTML = '';
-                    
+
                     // 添加全部按钮
                     const allButton = document.createElement('button');
                     allButton.className = 'filter-btn active';
                     allButton.setAttribute('data-filter', '全部');
                     allButton.textContent = '全部';
                     filterContainer.appendChild(allButton);
-                    
+
                     // 添加标签按钮
                     albumData.tags.forEach(tag => {
                         const button = document.createElement('button');
@@ -486,18 +517,18 @@ export async function loadAlbumDetail(albumId, password = null) {
                         button.classList.add(...randomColor.split(' '));
                         filterContainer.appendChild(button);
                     });
-                    
+
                     // 保存原始媒体数据
                     const originalMedia = [...albumData.mediaList];
-                    
+
                     // 绑定筛选事件
                     const filterBtns = filterContainer.querySelectorAll('.filter-btn');
                     const selectedFilters = new Set(['全部']);
-                    
+
                     filterBtns.forEach(btn => {
                         btn.addEventListener('click', function() {
                             const filter = this.getAttribute('data-filter');
-                            
+
                             if (filter === '全部') {
                                 // 点击全部按钮，清除其他选中状态
                                 selectedFilters.clear();
@@ -517,7 +548,7 @@ export async function loadAlbumDetail(albumId, password = null) {
                                         b.classList.remove('active');
                                     }
                                 });
-                                
+
                                 // 切换当前标签的选中状态
                                 if (selectedFilters.has(filter)) {
                                     selectedFilters.delete(filter);
@@ -526,7 +557,7 @@ export async function loadAlbumDetail(albumId, password = null) {
                                     selectedFilters.add(filter);
                                     this.classList.add('active');
                                 }
-                                
+
                                 // 如果没有选中任何标签，自动选中全部
                                 if (selectedFilters.size === 0) {
                                     selectedFilters.add('全部');
@@ -537,7 +568,7 @@ export async function loadAlbumDetail(albumId, password = null) {
                                     });
                                 }
                             }
-                            
+
                             // 实现筛选逻辑
                             let filteredMedia;
                             if (selectedFilters.has('全部') || selectedFilters.size === 0) {
@@ -545,27 +576,27 @@ export async function loadAlbumDetail(albumId, password = null) {
                                 filteredMedia = originalMedia;
                             } else {
                                 // 筛选出同时包含所有选中标签的媒体
-                            filteredMedia = originalMedia.filter(media => {
-                                return media.tags && [...selectedFilters].every(filter => {
-                                    return media.tags.some(tag => tag.name === filter);
+                                filteredMedia = originalMedia.filter(media => {
+                                    return media.tags && [...selectedFilters].every(filter => {
+                                        return media.tags.some(tag => tag.name === filter);
+                                    });
                                 });
-                            });
                             }
-                            
+
                             // 创建筛选后的相册数据，确保保留完整的 tags 数组
                             const filteredAlbumData = {
                                 ...albumData,
                                 mediaList: filteredMedia,
                                 tags: albumData.tags // 确保保留完整的标签列表
                             };
-                            
+
                             // 重新渲染相册详情
                             renderAlbumDetail(filteredAlbumData);
                         });
                     });
                 }
             }
-            
+
             // 渲染相册详情
             renderAlbumDetail(albumData);
         } else if (result.code === 4001) {  // 相册不存在
@@ -575,14 +606,14 @@ export async function loadAlbumDetail(albumId, password = null) {
             return;
         } else if (result.code === 4002 || result.code === 4003) {  // 需要密码或密码错误
             console.error('需要密码或密码错误:', result.message || result.msg);
-            
+
             // 区分首次请求和用户输入后的请求
             // 如果是首次请求（没有提供密码），不显示错误提示
             // 如果是用户输入密码后请求，显示错误提示
             if (password) {
                 showError(result.message || result.msg || '密码错误');
             }
-            
+
             // 显示自定义密码输入弹窗
             return new Promise((resolve) => {
                 showPasswordModal(albumId, async (newPassword, closeModal) => {
