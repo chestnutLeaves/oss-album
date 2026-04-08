@@ -1067,6 +1067,16 @@ input:checked + .toggle-slider:before {
   background: var(--text-secondary);
 }
 
+/* 隐藏模态框内容的滚动条但保留滚动功能 */
+.modal-content {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.modal-content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
 /* 加载动画 */
 .loading-spinner {
   display: inline-block;

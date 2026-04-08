@@ -107,6 +107,11 @@ export function showConfirm(title, message) {
     // 添加到页面
     document.body.appendChild(confirmModal);
     
+    // 添加show类以触发动画
+    setTimeout(() => {
+      confirmModal.classList.add('show');
+    }, 10);
+    
     // 绑定取消按钮事件
     const cancelBtn = confirmModal.querySelector('.cancel-btn');
     cancelBtn.addEventListener('click', () => {

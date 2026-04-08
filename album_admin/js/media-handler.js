@@ -107,9 +107,13 @@ class MediaHandler {
       video.src = URL.createObjectURL(file);
       video.crossOrigin = 'anonymous';
       
+      // 尝试的时间点数组（秒）
+      const timePoints = [0.1, 1, 2, 3, 5];
+      let currentIndex = 0;
+      
       video.addEventListener('loadeddata', () => {
-        // 设置视频播放位置为第一帧
-        video.currentTime = 0.1;
+        // 开始尝试第一个时间点
+        tryNextTimePoint();
       });
       
       video.addEventListener('seeked', () => {
@@ -121,11 +125,35 @@ class MediaHandler {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
           
-          // 将 canvas 转换为 Blob
-          canvas.toBlob((blob) => {
-            URL.revokeObjectURL(video.src);
-            resolve(blob);
-          }, 'image/jpeg', 0.8);
+          // 检查画布是否为黑屏（通过获取像素数据）
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          let isBlackFrame = true;
+          
+          // 抽样检查像素，判断是否为黑屏
+          const step = Math.floor(data.length / 1000); // 每1000个像素检查一个
+          for (let i = 0; i < data.length; i += step) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            // 如果有任何像素不是接近黑色，就不是黑屏
+            if (r > 10 || g > 10 || b > 10) {
+              isBlackFrame = false;
+              break;
+            }
+          }
+          
+          if (!isBlackFrame || currentIndex >= timePoints.length - 1) {
+            // 将 canvas 转换为 Blob
+            canvas.toBlob((blob) => {
+              URL.revokeObjectURL(video.src);
+              resolve(blob);
+            }, 'image/jpeg', 0.8);
+          } else {
+            // 尝试下一个时间点
+            currentIndex++;
+            tryNextTimePoint();
+          }
         } catch (error) {
           console.error('截取视频封面失败:', error);
           URL.revokeObjectURL(video.src);
@@ -137,6 +165,19 @@ class MediaHandler {
         URL.revokeObjectURL(video.src);
         resolve(null);
       });
+      
+      // 尝试下一个时间点
+      function tryNextTimePoint() {
+        if (currentIndex < timePoints.length) {
+          // 确保时间点不超过视频总时长
+          const duration = video.duration || 10; // 默认10秒
+          const timePoint = Math.min(timePoints[currentIndex], duration - 0.1);
+          video.currentTime = timePoint;
+        } else {
+          // 所有时间点都尝试失败，返回第一帧
+          video.currentTime = 0.1;
+        }
+      }
     });
   }
   

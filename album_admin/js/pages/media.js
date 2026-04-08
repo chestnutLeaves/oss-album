@@ -599,20 +599,86 @@ async function handleFileSelection(e) {
       video.controls = true;
       
       // 捕获视频第一帧作为默认封面
-      video.addEventListener('loadeddata', function() {
-        // 创建canvas用于捕获帧
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      video.addEventListener('loadeddata', async function() {
+        // 尝试多个时间点，避免黑屏
+        const timePoints = [0.1, 1, 2, 3, 5];
+        let currentIndex = 0;
+        let coverBlob = null;
         
-        // 将canvas转换为blob并存储
-        canvas.toBlob(function(blob) {
-          // 存储封面blob到文件对象中
-          file.coverBlob = blob;
-          file.coverUrl = URL.createObjectURL(blob);
-        }, 'image/jpeg', 0.8);
+        // 尝试捕获非黑屏帧
+        async function tryCaptureFrame(time) {
+          return new Promise((resolve) => {
+            video.currentTime = time;
+            video.addEventListener('seeked', function captureSeeked() {
+              video.removeEventListener('seeked', captureSeeked);
+              
+              try {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // 检查是否为黑屏
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                let isBlackFrame = true;
+                
+                const step = Math.floor(data.length / 1000);
+                for (let i = 0; i < data.length; i += step) {
+                  const r = data[i];
+                  const g = data[i + 1];
+                  const b = data[i + 2];
+                  if (r > 10 || g > 10 || b > 10) {
+                    isBlackFrame = false;
+                    break;
+                  }
+                }
+                
+                if (!isBlackFrame) {
+                  canvas.toBlob(function(blob) {
+                    resolve(blob);
+                  }, 'image/jpeg', 0.8);
+                } else {
+                  resolve(null);
+                }
+              } catch (error) {
+                resolve(null);
+              }
+            });
+          });
+        }
+        
+        // 尝试所有时间点
+        for (const time of timePoints) {
+          const blob = await tryCaptureFrame(time);
+          if (blob) {
+            coverBlob = blob;
+            break;
+          }
+        }
+        
+        // 如果所有时间点都失败，使用第一帧
+        if (!coverBlob) {
+          video.currentTime = 0.1;
+          video.addEventListener('seeked', function finalSeeked() {
+            video.removeEventListener('seeked', finalSeeked);
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            canvas.toBlob(function(blob) {
+              file.coverBlob = blob;
+              file.coverUrl = URL.createObjectURL(blob);
+            }, 'image/jpeg', 0.8);
+          });
+        } else {
+          file.coverBlob = coverBlob;
+          file.coverUrl = URL.createObjectURL(coverBlob);
+        }
       });
       
       // 当视频播放或拖动时更新封面
