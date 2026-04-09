@@ -14,6 +14,11 @@ class MediaHandler {
   
   // 压缩图片（只压缩质量，不压缩尺寸）
   async compressImage(file, quality = 0.7) {
+    // 小于1M的图片不需要压缩
+    if (file.size < 1 * 1024 * 1024) {
+      return file;
+    }
+    
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -24,7 +29,6 @@ class MediaHandler {
       // 文件不超过10M：质量参数 0.7
       const adjustedQuality = file.size > 10 * 1024 * 1024 ? 0.5 : 0.7;
 
-      
       img.onload = () => {
         // 不压缩尺寸，保持原尺寸
         const width = img.width;
@@ -34,13 +38,30 @@ class MediaHandler {
         canvas.height = height;
         ctx.drawImage(img, 0, 0, width, height);
         
-        // 转换为 Blob
+        console.log('开始压缩图片:', file.name, '原始大小:', (file.size / 1024 / 1024).toFixed(2) + 'MB', '质量:', adjustedQuality);
+        
+        // 优先使用WebP格式压缩
         canvas.toBlob((blob) => {
-          resolve(new File([blob], file.name, {
-            type: 'image/jpeg',
-            lastModified: Date.now()
-          }));
-        }, 'image/jpeg', adjustedQuality);
+          if (blob) {
+            // WebP压缩成功
+            console.log('WebP压缩成功:', blob.type, '压缩后大小:', (blob.size / 1024 / 1024).toFixed(2) + 'MB');
+            const fileName = file.name.replace(/\.[^/.]+$/, '.webp');
+            resolve(new File([blob], fileName, {
+              type: 'image/webp',
+              lastModified: Date.now()
+            }));
+          } else {
+            // WebP不支持，降级为JPEG
+            console.log('WebP不支持，降级为JPEG');
+            canvas.toBlob((fallbackBlob) => {
+              const fileName = file.name.replace(/\.[^/.]+$/, '.jpg');
+              resolve(new File([fallbackBlob], fileName, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              }));
+            }, 'image/jpeg', adjustedQuality);
+          }
+        }, 'image/webp', adjustedQuality);
       };
       
       img.onerror = () => {

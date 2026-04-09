@@ -1642,7 +1642,9 @@ export async function handleMediaUpload(albumId, files) {
       // 4. 上传压缩图作为缩略图（带进度）
       let thumbnailUrl = null;
       if (processedMedia.type === 'PHOTO' && processedMedia.compressedFile) {
-        const thumbFileName = fileName.replace(/\.(\w+)$/, '_thumb.$1');
+        // 根据压缩后的文件格式生成缩略图文件名
+        const compressedExt = processedMedia.compressedFile.name.split('.').pop();
+        const thumbFileName = fileName.replace(/\.(\w+)$/, `_thumb.${compressedExt}`);
         thumbnailUrl = await ossClient.uploadFile(
           processedMedia.compressedFile,
           thumbFileName,
