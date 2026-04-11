@@ -7,6 +7,7 @@ let banners = [];
 let editingBanner = null;
 let currentSiteId = null;
 let sites = [];
+let bannerSelectedFile = null;
 
 // 初始化页面
 export async function init(contentBody) {
@@ -100,55 +101,68 @@ function createModal() {
   modalDiv.innerHTML = modalHTML;
   const modal = modalDiv.firstElementChild;
   
-  // 添加到body
+  // 添加到 body
   if (modal) {
     document.body.appendChild(modal);
     
     // 绑定上传区域事件（只绑定一次）
-    const uploadArea = modal.querySelector('#banner-upload-area');
-    const imageFileInput = modal.querySelector('#banner-image-file');
-    const imagePreview = modal.querySelector('#banner-image-preview');
-    const previewImg = modal.querySelector('#banner-preview-img');
-    const uploadPlaceholder = modal.querySelector('#banner-upload-placeholder');
-    
-    if (uploadArea && imageFileInput) {
-      // 绑定上传区域点击事件
-      uploadArea.addEventListener('click', (e) => {
-        // 防止点击预览图时也触发文件选择
-        if (!e.target.closest('#banner-image-preview')) {
-          imageFileInput.click();
-        }
-      });
+      const uploadArea = modal.querySelector('#banner-upload-area');
+      const imageFileInput = modal.querySelector('#banner-image-file');
+      const imagePreview = modal.querySelector('#banner-image-preview');
+      const previewImg = modal.querySelector('#banner-preview-img');
+      const uploadPlaceholder = modal.querySelector('#banner-upload-placeholder');
       
-      // 绑定拖拽事件
-      uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.style.borderColor = '#667eea';
-        uploadArea.style.backgroundColor = '#f0f4ff';
-      });
-      
-      uploadArea.addEventListener('dragleave', () => {
-        uploadArea.style.borderColor = '#ddd';
-        uploadArea.style.backgroundColor = '#f9f9f9';
-      });
-      
-      uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.style.borderColor = '#ddd';
-        uploadArea.style.backgroundColor = '#f9f9f9';
+      if (uploadArea && imageFileInput) {
+        // 绑定上传区域点击事件
+        uploadArea.addEventListener('click', (e) => {
+          // 防止点击预览图时也触发文件选择
+          if (!e.target.closest('#banner-image-preview')) {
+            imageFileInput.click();
+          }
+        });
         
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-          imageFileInput.files = files;
-          // 触发change事件
-          imageFileInput.dispatchEvent(new Event('change'));
-        }
-      });
-      
-      // 绑定文件选择事件
-      imageFileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
+        // 绑定拖拽事件
+        uploadArea.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          uploadArea.style.borderColor = '#667eea';
+          uploadArea.style.backgroundColor = '#f0f4ff';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+          uploadArea.style.borderColor = '#ddd';
+          uploadArea.style.backgroundColor = '#f9f9f9';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+          e.preventDefault();
+          uploadArea.style.borderColor = '#ddd';
+          uploadArea.style.backgroundColor = '#f9f9f9';
+          
+          const files = e.dataTransfer.files;
+          if (files.length > 0) {
+            imageFileInput.files = files;
+            bannerSelectedFile = files[0];
+            // 触发 change 事件
+            imageFileInput.dispatchEvent(new Event('change'));
+          }
+        });
+        
+        // 绑定文件选择事件
+        imageFileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          
+          // 如果用户取消选择（文件列表为空），保留之前已选择的文件
+          if (!file) {
+            if (bannerSelectedFile) {
+              // 保留之前选择的文件，不执行任何操作
+              return;
+            }
+            return;
+          }
+          
+          // 更新已选择的文件
+          bannerSelectedFile = file;
+          
           const reader = new FileReader();
           reader.onload = (e) => {
             if (previewImg) {
@@ -162,9 +176,8 @@ function createModal() {
             }
           };
           reader.readAsDataURL(file);
-        }
-      });
-    }
+        });
+      }
   } else {
     console.error('模态框创建失败');
   }
@@ -355,6 +368,9 @@ function openModal(banner = null) {
     uploadPlaceholder.style.display = 'block';
   }
   
+  // 清空已选择的文件
+  bannerSelectedFile = null;
+  
   if (banner) {
     // 编辑模式
     if (modalTitle) {
@@ -456,7 +472,7 @@ async function saveBanner() {
   
   const formData = new FormData(bannerForm);
   const imageFileInput = document.getElementById('banner-image-file');
-  const imageFile = imageFileInput.files[0];
+  const imageFile = imageFileInput.files[0] || bannerSelectedFile;
   
   try {
     let imageUrl = null;

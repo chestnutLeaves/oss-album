@@ -233,9 +233,20 @@ class MediaHandler {
           const datePart = parts[0].replace(/:/g, '-');
           const timePart = parts[1] || '00:00:00';
           const formattedTime = `${datePart} ${timePart}`;
+          
+          // EXIF 时间通常存储为本地时间，需要正确转换为 ISO 格式
+          // 使用 Date 构造函数解析为本地时间，然后转换为 ISO 字符串
           const date = new Date(formattedTime);
           if (!isNaN(date.getTime())) {
-            result.shootTime = date.toISOString();
+            // 保持本地时间不变，转换为 ISO 格式存储
+            // 这样后端接收后可以正确解析为本地时间
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            result.shootTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
           } else {
             result.shootTime = new Date().toISOString();
           }

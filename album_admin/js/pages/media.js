@@ -400,7 +400,8 @@ function bindUploadModalEvents(modalInstance) {
     startUploadBtn.addEventListener('click', async () => {
       const albumId = document.getElementById('upload-album-id').value;
       const fileInput = document.getElementById('file-input');
-      const files = Array.from(fileInput.files);
+      // 优先从 selectedFiles 获取文件，避免用户取消选择后文件丢失
+      const files = selectedFiles.length > 0 ? selectedFiles : Array.from(fileInput.files);
       
       if (files.length > 0) {
         try {
@@ -507,9 +508,23 @@ function bindAddTagModalEvents() {
 }
 
 // 处理文件选择
+let selectedFiles = [];
+
 async function handleFileSelection(e) {
-  const files = Array.from(e.target.files);
-  if (files.length === 0) return;
+  const newFiles = Array.from(e.target.files);
+  
+  // 如果用户取消选择（新文件列表为空），保留之前已选择的文件
+  if (newFiles.length === 0) {
+    if (selectedFiles.length === 0) {
+      return; // 没有已选择的文件，直接返回
+    }
+    // 保留之前选择的文件，不执行任何操作
+    return;
+  }
+  
+  // 更新已选择的文件列表
+  selectedFiles = newFiles;
+  const files = selectedFiles;
   
   // 显示文件预览
   const previewContainer = document.getElementById('file-preview-container');
@@ -718,7 +733,7 @@ async function handleFileSelection(e) {
           const shootTimeInput = document.getElementById('media-shoot-time');
           if (shootTimeInput) {
             try {
-              // 解析EXIF日期格式 "YYYY:MM:DD HH:MM:SS"
+              // 解析 EXIF 日期格式 "YYYY:MM:DD HH:MM:SS"
               const exifDateStr = exifInfo.DateTime;
               const dateParts = exifDateStr.split(' ');
               if (dateParts.length === 2) {
@@ -727,13 +742,25 @@ async function handleFileSelection(e) {
                 const formattedDate = `${datePart} ${timePart}`;
                 const dateTime = new Date(formattedDate);
                 if (!isNaN(dateTime.getTime())) {
-                  shootTimeInput.value = dateTime.toISOString().slice(0, 16);
+                  // 保持本地时间格式，直接设置为 datetime-local 输入框
+                  // 使用本地时间字符串格式，避免时区转换
+                  const year = dateTime.getFullYear();
+                  const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                  const day = String(dateTime.getDate()).padStart(2, '0');
+                  const hours = String(dateTime.getHours()).padStart(2, '0');
+                  const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+                  shootTimeInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
                 }
               } else {
                 // 尝试直接转换
                 const dateTime = new Date(exifDateStr);
                 if (!isNaN(dateTime.getTime())) {
-                  shootTimeInput.value = dateTime.toISOString().slice(0, 16);
+                  const year = dateTime.getFullYear();
+                  const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                  const day = String(dateTime.getDate()).padStart(2, '0');
+                  const hours = String(dateTime.getHours()).padStart(2, '0');
+                  const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+                  shootTimeInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
                 }
               }
             } catch (error) {
@@ -1086,7 +1113,13 @@ export function closeUploadModal() {
       uploadForm.reset();
     }
     
-    // 清空文件预览
+    // 清空文件选择和预览
+    const fileInput = document.getElementById('file-input');
+    if (fileInput) {
+      fileInput.value = '';
+    }
+    selectedFiles = [];
+    
     const previewContainer = document.getElementById('file-preview-container');
     const previewDiv = document.getElementById('file-preview');
     const uploadPlaceholder = document.getElementById('upload-placeholder');
@@ -1120,7 +1153,7 @@ export function closeUploadModal() {
     }
     
     // 关闭弹窗
-    // 移除show类
+    // 移除 show 类
     modal.classList.remove('show');
     // 等待动画完成后再隐藏
     setTimeout(() => {
